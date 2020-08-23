@@ -1,2 +1,18 @@
 ---
-# tasks file for common
+- name: Set the system time zone
+  timezone:
+    name: "{{ timezone }}"
+
+- name: Set the hostname
+  copy:
+    content: "{{ inventory_hostname }}"
+    dest: /etc/hostname
+    force: true
+
+- name: Install hosts file
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: 0644
