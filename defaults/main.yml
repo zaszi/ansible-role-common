@@ -10,3 +10,15 @@ groups: []
 sudoers: []
 sshusers: []
 users: []
+
+wired: false
+wireless: false
+wifi_networks: []
+bridge: false
+bridge_interfaces: []
+firewall_tcp: []
+firewall_udp: []
+dns: []
+dns_fallback: []
+ntp: []
+ntp_fallback: []

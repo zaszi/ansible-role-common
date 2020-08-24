@@ -20,3 +20,4 @@
 - include_tasks: dracut.yml
 - include_tasks: packages.yml
 - include_tasks: users-and-groups.yml
+- include_tasks: network.yml

@@ -1,0 +1,59 @@
+# Block reserved local addresses incoming from the internet or local network, 
+# spoof protection utilizing the raw (first) table traversed.
+*raw
+:PREROUTING ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A PREROUTING -m rpfilter --invert -j DROP
+COMMIT
+
+# Define the 3 basic chains and their policies. Drop INPUT by default in case
+# there is a gap in our rules, Drop FORWARD by default since we are not a
+# router, and allow all OUTPUT by default because filtering INPUT is sufficient.
+*filter
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+
+# Define 2 chains for opening UDP and TCP ports for easier administration.
+:TCP - [0:0]
+:UDP - [0:0]
+
+# Allow all established and new valid traffic.
+-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+
+# Allow all traffic from the loopback interface, required for many applications.
+-A INPUT -i lo -j ACCEPT
+
+# Drop all invalid packets (unwarranted ICMP responses, bad headers, attacks..)
+-A INPUT -m conntrack --ctstate INVALID -j DROP
+
+# Allow new pings and only pings, too many vulnerabilities in other ICMP
+# packets and we are not a router that needs them.
+-A INPUT -p icmp -m icmp --icmp-type 8 -m conntrack --ctstate NEW -j ACCEPT
+
+# Jump to UDP chain for all new UDP connections.
+-A INPUT -p udp -m conntrack --ctstate NEW -j UDP
+
+# Jump to TCP chain for all new TCP connections, if they properly start with a SYN packet.
+-A INPUT -p tcp --tcp-flags FIN,SYN,RST,ACK SYN -m conntrack --ctstate NEW -j TCP
+
+# Reject politely, not drop, packets unmatched in the UDP chain.
+-A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable
+
+# Reject politely, not drop, packets unmatched in the TCP chain.
+-A INPUT -p tcp -j REJECT --reject-with tcp-reset
+
+# Reject politely, not drop, everything else.
+-A INPUT -j REJECT --reject-with icmp-proto-unreachable
+
+# Open required TCP ports.
+{% for port in firewall_tcp %}
+-A TCP -p tcp --dport {{ port }} -j ACCEPT
+{% endfor %}
+
+# Open required UDP ports.
+{% for port in firewall_udp %}
+-A UDP -p udp --dport {{ port }} -j ACCEPT
+{% endfor %}
+
+COMMIT

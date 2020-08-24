@@ -1,0 +1,133 @@
+---
+- name: Set up wired network configuration
+  template:
+    src: wired.network.j2
+    dest: "/etc/systemd/network/10-{{ item }}.network"
+    owner: root
+    group: root
+    mode: 0644
+  loop: "{{ ansible_interfaces }}"
+  when: wired|bool and item.startswith('en') and item not in bridge_interfaces
+  notify: "restart systemd-networkd"
+
+- name: Set up wireless network configuration
+  template:
+    src: wireless.network.j2
+    dest: "/etc/systemd/network/20-{{ item }}.network"
+    owner: root
+    group: root
+    mode: 0644
+  loop: "{{ ansible_interfaces }}"
+  when: wireless|bool and item.startswith('wl')
+  notify: "restart systemd-networkd"
+
+- name: Ensure systemd override directory for iwd exists
+  file:
+    path: /etc/systemd/system/iwd.service.d/
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+  when: wireless|bool
+
+- name: Install iwd service override file
+  template:
+    src: iwd_override.conf.j2
+    dest: /etc/systemd/system/iwd.service.d/override.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: wireless|bool
+
+- name: Ensure /etc/iwd directory exists
+  file:
+    path: /etc/iwd
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+  when: wireless|bool
+
+- name: Install iwd config
+  template:
+    src: iwd.conf.j2
+    dest: /etc/iwd/main.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: wireless|bool
+
+- name: Install iwd network configuration file(s)
+  template:
+    src: iwd_network.psk.j2
+    dest: "/var/lib/iwd/{{ item.ssid }}.psk"
+    owner: root
+    group: root
+    mode: 0600
+  vars:
+    - psk: "{{ item.pass }}"
+    - auto: "{{ item.auto }}"
+  loop: "{{ wifi_networks }}"
+  when: wireless|bool
+
+- name: Set up network bridge device
+  copy:
+    src: bridge.netdev
+    dest: "/etc/systemd/network/30-br0.netdev"
+    owner: root
+    group: root
+    mode: 0644
+  when: bridge|bool
+  notify: "restart systemd-networkd"
+
+- name: Set up bridge network configuration
+  copy:
+    src: bridge.network
+    dest: "/etc/systemd/network/30-br0.network"
+    owner: root
+    group: root
+    mode: 0644
+  when: bridge|bool
+  notify: "restart systemd-networkd"
+
+- name: Add first wired network interface to bridge
+  template:
+    src: bridge-bind.network.j2
+    dest: "/etc/systemd/network/10-{{ item }}.network"
+    owner: root
+    group: root
+    mode: 0644
+  when: bridge|bool
+  loop: "{{ bridge_interfaces }}"
+  notify: "restart systemd-networkd"
+
+- name: Install systemd-resolved config
+  template:
+    src: resolved.conf.j2
+    dest: /etc/systemd/resolved.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: "restart systemd-resolved"
+
+- name: Check whether systemd DNS stub is already symlinked
+  stat:
+    path: "/run/systemd/resolve/stub-resolv.conf"
+  register: stub
+
+- name: Enable systemd DNS stub
+  file:
+    src: /run/systemd/resolve/stub-resolv.conf
+    dest: /etc/resolv.conf
+    state: link
+    force: true
+  when: stub.stat.exists and not stub.stat.islnk
+
+- name: Install systemd-timesyncd config
+  template:
+    src: timesyncd.conf.j2
+    dest: /etc/systemd/timesync.conf
+    owner: root
+    group: root
+    mode: 644
+  notify: "restart systemd-timesyncd"
