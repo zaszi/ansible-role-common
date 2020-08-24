@@ -1,0 +1,36 @@
+---
+- name: Main | Install IPv4 iptables configuration
+  template:
+    src: iptables.rules.j2
+    dest: /etc/iptables/iptables.rules
+    owner: root
+    group: root
+    mode: 0644
+  notify: "restart iptables"
+
+- name: Main | Install IPv6 iptables configuration
+  template:
+    src: ip6tables.rules.j2
+    dest: /etc/iptables/ip6tables.rules
+    owner: root
+    group: root
+    mode: 0644
+  notify: "restart iptables"
+
+- name: Remove small Diffie-Hellman moduli
+  shell: |
+    awk '$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.safe
+    cp /etc/ssh/moduli.safe /etc/ssh/moduli
+  args:
+    creates: /etc/ssh/moduli.safe
+  notify: "restart sshd"
+
+- name: Install sshd configuration
+  template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: 0644
+    validate: "sshd -T -f %s"
+  notify: "restart sshd"

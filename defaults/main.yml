@@ -22,3 +22,5 @@ dns: []
 dns_fallback: []
 ntp: []
 ntp_fallback: []
+
+nproc: "1000"
