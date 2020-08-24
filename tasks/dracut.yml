@@ -1,0 +1,36 @@
+---
+- name: Ensure /etc/pacman.d/hooks exists
+  file:
+    path: "/etc/pacman.d/hooks"
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+  when: dracut|bool
+
+- name: Install dracut configuration file
+  copy:
+    src: dracut.conf
+    dest: /etc/dracut.conf.d/10-dracut.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: dracut|bool
+
+- name: Install dracut kernel script
+  copy:
+    src: dracut-linux.sh
+    dest: /usr/local/sbin/dracut-linux.sh
+    owner: root
+    group: root
+    mode: 0700
+  when: dracut|bool
+
+- name: Install dracut pacman hook
+  copy:
+    src: dracut-linux.hook
+    dest: /etc/pacman.d/hooks/10-dracut-linux.hook
+    owner: root
+    group: root
+    mode: 0644
+  when: dracut|bool
