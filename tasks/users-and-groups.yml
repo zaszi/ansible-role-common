@@ -1,0 +1,45 @@
+---
+- name: Set XDG directory defaults
+  copy:
+    src: user-dirs.defaults
+    dest: /etc/xdg/user-dirs.defaults
+    owner: root
+    group: root
+    mode: 0644
+  when: xdg|bool
+
+- name: Add groups
+  group:
+    name: "{{ item }}"
+    system: true
+    state: present
+  with_items: "{{ groups }}"
+
+- name: Enable passwordless sudo group
+  lineinfile:
+    dest: "/etc/sudoers.d/{{ item }}"
+    state: present
+    create: true
+    mode: 0440
+    line: "%{{ item }} ALL=(ALL) NOPASSWD: ALL"
+    validate: "visudo -cf %s"
+  loop: "{{ sudoers }}"
+
+- name: Add specified user(s)
+  user:
+    name: "{{ item.name }}"
+    password: "{{ lookup('passwordstore', item.pass) |\
+      password_hash('sha512', ansible_hostname) }}"
+    shell: "{{ item.shell | default('/bin/bash') }}"
+    groups: "{{ item.groups | join(',') if item.groups is defined else '' }}"
+    state: present
+  loop: "{{ users }}"
+
+- name: Set authorized keys for user(s)
+  authorized_key:
+    user: "{{ item.name }}"
+    key: "{{ item.pubkey }}"
+    exclusive: true
+    state: present
+  when: item.pubkey|bool
+  loop: "{{ users }}"

@@ -5,3 +5,8 @@ dracut: false
 reflector: false
 packages: []
 packages_aur: []
+
+groups: []
+sudoers: []
+sshusers: []
+users: []
