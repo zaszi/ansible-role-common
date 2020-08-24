@@ -22,3 +22,4 @@
 - include_tasks: users-and-groups.yml
 - include_tasks: network.yml
 - include_tasks: security.yml
+- include_tasks: services.yml
