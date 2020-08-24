@@ -1,3 +1,7 @@
 ---
 timezone: UTC
 dracut: false
+
+reflector: false
+packages: []
+packages_aur: []

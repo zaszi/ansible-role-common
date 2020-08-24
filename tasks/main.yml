@@ -18,3 +18,4 @@
     mode: 0644
 
 - include_tasks: dracut.yml
+- include_tasks: packages.yml

@@ -1,0 +1,56 @@
+---
+- name: Install pacman config
+  template:
+    src: pacman.conf.j2
+    dest: /etc/pacman.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Install reflector unit file
+  copy:
+    src: reflector.service
+    dest: /etc/systemd/system/reflector.service
+    owner: root
+    group: root
+    mode: 0644
+  when: arch == "auto"
+
+- name: Install reflector timer file
+  copy:
+    src: reflector.timer
+    dest: /etc/systemd/system/reflector.timer
+    owner: root
+    group: root
+    mode: 0644
+  when: arch == "auto"
+
+- name: Create aurmake user
+  user:
+    name: aurmake
+    state: present
+
+- name: Ensure aurmake user can use passwordless pacman
+  lineinfile:
+    dest: "/etc/sudoers.d/aurmake"
+    line: "aurmake ALL=(ALL) NOPASSWD: /usr/bin/pacman"
+    state: present
+    owner: root
+    group: root
+    mode: 0440
+    create: true
+    validate: "visudo -cf %s"
+
+- name: Install packages
+  pacman:
+    name: "{{ packages }}"
+    state: present
+
+- name: Install AUR packages
+  become: true
+  become_user: aurmake
+  aur:
+    name: "{{ item }}"
+    use: makepkg
+    skip_installed: true
+  loop: "{{ packages_aur }}"
