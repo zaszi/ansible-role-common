@@ -1,17 +1,26 @@
 ---
+### COMMON - MAIN ###
+
 timezone: UTC
 dracut: false
 
-reflector: false
+### COMMON - PACKAGES ###
+
+arch: auto
 packages: []
 packages_aur: []
 
+### USERS & GROUPS ###
+
+xdg: false
 groups: []
 sudoers: []
 sshusers: []
 users: []
 
-wired: false
+### COMMON - NETWORK ###
+
+wired: true
 wireless: false
 wifi_networks: []
 bridge: false
@@ -23,6 +32,6 @@ dns_fallback: []
 ntp: []
 ntp_fallback: []
 
-nproc: "1000"
+### COMMON - SERVICES ###
 
 services: []
