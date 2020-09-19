@@ -7,6 +7,9 @@
   copy:
     content: "{{ inventory_hostname }}"
     dest: /etc/hostname
+    owner: root
+    group: root
+    mode: 0644
     force: true
 
 - name: Install hosts file
