@@ -57,19 +57,6 @@
     mode: 0644
   when: wireless|bool
 
-- name: Install iwd network configuration file(s)
-  template:
-    src: iwd_network.psk.j2
-    dest: "/var/lib/iwd/{{ item.ssid }}.psk"
-    owner: root
-    group: root
-    mode: 0600
-  vars:
-    - psk: "{{ item.pass }}"
-    - auto: "{{ item.auto }}"
-  loop: "{{ wifi_networks }}"
-  when: wireless|bool
-
 - name: Set up network bridge device
   copy:
     src: bridge.netdev
