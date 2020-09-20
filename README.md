@@ -1,38 +1,69 @@
-Role Name
-=========
+# Ansible Role: Common
 
-A brief description of the role goes here.
+Provisions Arch Linux and Arch Linux ARM hosts:
 
-Requirements
-------------
+- General system setup
+- Install packages (including AUR packages)
+- Add users and groups
+- Configure network
+- Security configuration
+- Starting and enabling system services
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+## Requirements
 
-Role Variables
---------------
+This role requires the `ansible-aur` module for installing AUR packages on hosts. See the [ansible-aur](https://github.com/kewlfft/ansible-aur) repository for installation instructions.
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+## Role Variables
 
-Dependencies
-------------
+| Variable          | Choices/**Default**              | Comments                                                                                    |
+| ----------------- | -------------------------------- | ------------------------------------------------------------------------------------------- |
+| timezone          | **UTC**, …                       | The system timezone, list all possible values with the command `timedatectl list-timezones` |
+| dracut            | true, **false**                  | Whether to utilize `dracut` instead of the default `mkinitcpio`                             |
+| arch              | **auto**, armv6h, armv7h, armv8h | Machine architecture, defaults to `auto` for x86_64, but must be changed for ARM machines   |
+| packages          | **[]**, …                        | List of packages to install                                                                 |
+| packages_aur      | **[]**, …                        | List of AUR packages to install                                                             |
+| xdg               | true, **false**                  | Set XDG directory defaults (according to files/user-dirs.defaults)                          |
+| groups            | **[]**, …                        | List of groups to create                                                                    |
+| sudoers           | **[]**, …                        | List of groups that will receive passwordless sudo access                                   |
+| sshusers          | **[]**, …                        | List of groups that will receive SSH access                                                 |
+| users             | **[]**, …                        | List of users to add, see below this table for the expected format                          |
+| wired             | **true**, false                  | Whether to set up a wired network configuration                                             |
+| wireless          | true, **false**                  | Whether to set up a wireless network configuration                                          |
+| bridge            | true, **false**                  | Whether to set up a network bridge interface                                                |
+| bridge_interfaces | **[]**, …                        | Which network interfaces to bridge (requires above option to be true)                       |
+| firewall_tcp      | **[]**, …                        | List of TCP ports to allow in the firewall                                                  |
+| firewall_udp      | **[]**, …                        | List of UDP ports to allow in the firewall                                                  |
+| dns               | **[]**, …                        | List of DNS primary addresses                                                               |
+| dns_fallback      | **[]**, …                        | List of DNS fallback addresses                                                              |
+| ntp               | **[]**, …                        | List of NTP primary addresses                                                               |
+| ntp_fallback      | **[]**, …                        | List of NTP fallback addresses                                                              |
+| services          | **[]**, …                        | List of system services (systemd services, timers, …) to start now and enable on boot       |
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+User declarations are in the following format. Note that passwords are defined using the [pass](https://www.passwordstore.org/) utility and the respective Ansible [passwordstore](https://docs.ansible.com/ansible/latest/plugins/lookup/passwordstore.html) plugin.
 
-Example Playbook
-----------------
+    users:
+    - name: root
+        pass: path/to/pass/root
+    - name: myuser
+        pass: path/to/pass/myuser
+        shell: /bin/bash
+        groups:
+        - audio
+        - video
+        - wheel
+        pubkey: "MY_PUBLIC_KEY"
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+## Dependencies
 
-    - hosts: servers
+None.
+
+## Example Playbook
+
+    - hosts: all
+      become: true
       roles:
-         - { role: username.rolename, x: 42 }
+         - ansible-role-common
 
-License
--------
+## License
 
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Ansible-role-common is licensed under the [MIT license](https://github.com/zaszi/ansible-role-common/blob/master/LICENSE.md).
