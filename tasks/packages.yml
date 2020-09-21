@@ -51,6 +51,4 @@
   become_user: aurmake
   aur:
     name: "{{ item }}"
-    use: makepkg
-    skip_installed: true
   loop: "{{ packages_aur }}"
