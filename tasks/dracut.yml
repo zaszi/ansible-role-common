@@ -1,4 +1,16 @@
 ---
+- name: Install dracut
+  pacman:
+    name: dracut
+    state: present
+  when: dracut|bool
+
+- name: Remove mkinitcpio
+  pacman:
+    name: mkinitcpio
+    state: absent
+  when: dracut|bool
+
 - name: Ensure /etc/pacman.d/hooks exists
   file:
     path: "/etc/pacman.d/hooks"
