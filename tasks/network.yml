@@ -7,7 +7,8 @@
     group: root
     mode: 0644
   loop: "{{ ansible_interfaces }}"
-  when: wired|bool and item.startswith('en') and item not in bridge_interfaces
+  when: wired|bool and (item.startswith('en') or
+    item.startswith('eth')) and item not in bridge_interfaces
   notify: "restart systemd-networkd"
 
 - name: Set up wireless network configuration
