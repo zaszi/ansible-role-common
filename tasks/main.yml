@@ -26,12 +26,7 @@
     regexp: "^#Storage="
     line: Storage=volatile
   when: arch != "auto"
-
-- name: Restart systemd-journald
-  service:
-    name: systemd-journald
-    state: restarted
-  when: arch != "auto"
+  notify: "restart systemd-journald"
 
 - name: Remove old persistent journald logs
   file:

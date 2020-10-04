@@ -17,6 +17,12 @@
     state: restarted
   listen: "restart systemd-timesyncd"
 
+- name: Restart systemd-journald
+  service:
+    name: systemd-journald
+    state: restarted
+  listen: "restart systemd-journald"
+
 - name: Restart iptables
   service:
     name: iptables
