@@ -42,7 +42,7 @@
     validate: "visudo -cf %s"
 
 - name: Install packages
-  pacman:
+  community.general.pacman:
     name: "{{ packages }}"
     state: present
 

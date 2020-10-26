@@ -11,7 +11,9 @@ Provisions Arch Linux and Arch Linux ARM hosts:
 
 ## Requirements
 
-This role requires the `ansible-aur` module for installing AUR packages on hosts. See the [ansible-aur](https://github.com/kewlfft/ansible-aur) repository for installation instructions.
+To install Arch Linux packages, this role relies on the pacman module of the community general collection. Install it with `ansible-galaxy collection install community.general`.
+
+Requires the `ansible-aur` module for installing AUR packages on hosts. See the [ansible-aur](https://github.com/kewlfft/ansible-aur) repository for installation instructions.
 
 ## Role Variables
 
