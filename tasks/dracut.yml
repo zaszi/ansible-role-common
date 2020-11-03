@@ -29,19 +29,37 @@
     mode: 0644
   when: dracut|bool
 
-- name: Install dracut kernel script
+- name: Install dracut install script
   copy:
-    src: dracut-linux.sh
-    dest: /usr/local/sbin/dracut-linux.sh
+    src: dracut-install.sh
+    dest: /usr/local/sbin/dracut-install.sh
     owner: root
     group: root
     mode: 0700
   when: dracut|bool
 
-- name: Install dracut pacman hook
+- name: Install dracut remove script
   copy:
-    src: dracut-linux.hook
-    dest: /etc/pacman.d/hooks/10-dracut-linux.hook
+    src: dracut-remove.sh
+    dest: /usr/local/sbin/dracut-remove.sh
+    owner: root
+    group: root
+    mode: 0700
+  when: dracut|bool
+
+- name: Install dracut pacman install hook
+  copy:
+    src: dracut-install.hook
+    dest: /etc/pacman.d/hooks/10-dracut-install.hook
+    owner: root
+    group: root
+    mode: 0644
+  when: dracut|bool
+
+- name: Install dracut pacman remove hook
+  copy:
+    src: dracut-remove.hook
+    dest: /etc/pacman.d/hooks/10-dracut-remove.hook
     owner: root
     group: root
     mode: 0644
