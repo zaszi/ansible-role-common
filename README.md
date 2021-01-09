@@ -68,4 +68,4 @@ None.
 
 ## License
 
-Ansible-role-common is licensed under the [MIT license](https://github.com/zaszi/ansible-role-common/blob/master/LICENSE).
+Ansible-role-common is licensed under the [MIT license](LICENSE).
