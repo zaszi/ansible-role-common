@@ -89,13 +89,18 @@
   loop: "{{ bridge_interfaces }}"
   notify: "restart systemd-networkd"
 
-- name: Install systemd-resolved config
-  template:
-    src: resolved.conf.j2
-    dest: /etc/systemd/resolved.conf
-    owner: root
-    group: root
-    mode: 0644
+- name: Set DNS in systemd-resolved config
+  lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: "^#?DNS="
+    line: "DNS={{ dns | join(' ') }}"
+  notify: "restart systemd-resolved"
+
+- name: Set fallback DNS in systemd-resolved config
+  lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: "FallbackDNS="
+    line: "FallbackDNS={{ dns_fallback | join(' ') }}"
   notify: "restart systemd-resolved"
 
 - name: Check whether systemd DNS stub is already symlinked
