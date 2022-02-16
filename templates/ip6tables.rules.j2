@@ -27,11 +27,8 @@ COMMIT
 # Drop all invalid packets (unwarranted ICMP responses, bad headers, attacks..)
 -A INPUT -m conntrack --ctstate INVALID -j DROP
 
-# Allow all new pings.
--A INPUT -p ipv6-icmp -m icmp6 --icmpv6-type 128 -m conntrack --ctstate NEW -j ACCEPT
-
-# Allow all link-local ICMP traffic.
--A INPUT -s fe80::/10 -p ipv6-icmp -j ACCEPT
+# Allow all ICMP traffic.
+-A INPUT -p ipv6-icmp -j ACCEPT
 
 # Jump to UDP chain for all new UDP connections.
 -A INPUT -p udp -m conntrack --ctstate NEW -j UDP
