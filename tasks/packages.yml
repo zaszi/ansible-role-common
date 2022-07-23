@@ -29,6 +29,7 @@
   user:
     name: aurmake
     state: present
+    create_home: true
 
 - name: Ensure aurmake user can use passwordless pacman
   lineinfile:
