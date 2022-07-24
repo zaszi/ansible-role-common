@@ -123,13 +123,6 @@
     force: true
   when: stub.stat.exists and not stub.stat.islnk
 
-- name: Configure nsswitch
-  lineinfile:
-    path: /etc/nsswitch.conf
-    regexp: "hosts: files"
-    line: "files mymachines myhostname mdns_minimal [NOTFOUND=return] \
-      resolve [!UNAVAIL=return] dns"
-
 - name: Install systemd-timesyncd config
   template:
     src: timesyncd.conf.j2
