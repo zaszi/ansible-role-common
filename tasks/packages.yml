@@ -47,6 +47,7 @@
     name: "{{ packages }}"
     update_cache: true
     state: present
+  when: "packages | length > 0"
 
 - name: Install AUR packages
   become: true
@@ -54,3 +55,4 @@
   aur:
     name: "{{ item }}"
   loop: "{{ packages_aur }}"
+  when: "packages_aur | length > 0"
