@@ -5,7 +5,7 @@ After=network-online.target
 
 [Service]
 Type=oneshot
-ExecStart=/bin/sh -c "/usr/bin/reflector --protocol https --latest 10 --age 24 --sort rate --save /etc/pacman.d/mirrorlist; rm --force /etc/pacman.d/mirrorlist.pacnew; pkgfile --update"
+ExecStart=/bin/sh -c "/usr/bin/reflector --country Belgium,Netherlands,France,Germany --number 5 --sort country --save /etc/pacman.d/mirrorlist; rm --force /etc/pacman.d/mirrorlist.pacnew; pkgfile --update"
 
 [Install]
 RequiredBy=multi-user.target
