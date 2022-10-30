@@ -15,7 +15,7 @@
     owner: root
     group: root
     mode: 0644
-  notify: "restart iptables"
+  notify: "restart ip6tables"
 
 - name: Remove small Diffie-Hellman moduli
   shell: |
