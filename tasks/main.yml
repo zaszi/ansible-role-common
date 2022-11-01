@@ -1,10 +1,10 @@
 ---
 - name: Set the system time zone
-  timezone:
+  community.general.system.timezone:
     name: "{{ timezone }}"
 
 - name: Set the hostname
-  copy:
+  ansible.builtin.copy:
     content: "{{ inventory_hostname }}"
     dest: /etc/hostname
     owner: root
@@ -13,7 +13,7 @@
     force: true
 
 - name: Install hosts file
-  template:
+  ansible.builtin.template:
     src: hosts.j2
     dest: /etc/hosts
     owner: root
@@ -21,7 +21,7 @@
     mode: 0644
 
 - name: Set journald storage to volatile
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/systemd/journald.conf
     regexp: "^#Storage="
     line: Storage=volatile
@@ -29,14 +29,25 @@
   notify: "restart systemd-journald"
 
 - name: Remove old persistent journald logs
-  file:
+  ansible.builtin.file:
     path: /var/log/journal
     state: absent
   when: arch != "auto"
 
-- include_tasks: dracut.yml
-- include_tasks: packages.yml
-- include_tasks: users-and-groups.yml
-- include_tasks: network.yml
-- include_tasks: security.yml
-- include_tasks: services.yml
+- name: Add dracut configuration
+  ansible.builtin.include_tasks: dracut.yml
+
+- name: Install packages
+  ansible.builtin.include_tasks: packages.yml
+
+- name: Add users and groups
+  ansible.builtin.include_tasks: users-and-groups.yml
+
+- name: Configure network
+  ansible.builtin.include_tasks: network.yml
+
+- name: Add security measures
+  ansible.builtin.include_tasks: security.yml
+
+- name: Configure system services
+  ansible.builtin.include_tasks: services.yml

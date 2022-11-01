@@ -1,10 +1,10 @@
 ---
 - name: Reload systemd daemon
-  systemd:
+  ansible.builtin.systemd:
     daemon_reload: true
 
 - name: Enable services
-  service:
+  ansible.builtin.service:
     name: "{{ item }}"
     enabled: true
     state: started

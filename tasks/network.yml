@@ -1,6 +1,6 @@
 ---
 - name: Set up wired network configuration
-  template:
+  ansible.builtin.template:
     src: wired.network.j2
     dest: "/etc/systemd/network/10-{{ item }}.network"
     owner: root
@@ -12,7 +12,7 @@
   notify: "restart systemd-networkd"
 
 - name: Set up wireless network configuration
-  template:
+  ansible.builtin.template:
     src: wireless.network.j2
     dest: "/etc/systemd/network/20-{{ item }}.network"
     owner: root
@@ -23,7 +23,7 @@
   notify: "restart systemd-networkd"
 
 - name: Ensure systemd override directory for iwd exists
-  file:
+  ansible.builtin.file:
     path: /etc/systemd/system/iwd.service.d/
     owner: root
     group: root
@@ -32,7 +32,7 @@
   when: wireless|bool
 
 - name: Install iwd service override file
-  template:
+  ansible.builtin.template:
     src: iwd_override.conf.j2
     dest: /etc/systemd/system/iwd.service.d/override.conf
     owner: root
@@ -41,7 +41,7 @@
   when: wireless|bool
 
 - name: Ensure /etc/iwd directory exists
-  file:
+  ansible.builtin.file:
     path: /etc/iwd
     owner: root
     group: root
@@ -50,7 +50,7 @@
   when: wireless|bool
 
 - name: Install iwd config
-  template:
+  ansible.builtin.template:
     src: iwd.conf.j2
     dest: /etc/iwd/main.conf
     owner: root
@@ -59,7 +59,7 @@
   when: wireless|bool
 
 - name: Set up network bridge device
-  copy:
+  ansible.builtin.copy:
     src: bridge.netdev
     dest: "/etc/systemd/network/30-br0.netdev"
     owner: root
@@ -69,7 +69,7 @@
   notify: "restart systemd-networkd"
 
 - name: Set up bridge network configuration
-  copy:
+  ansible.builtin.copy:
     src: bridge.network
     dest: "/etc/systemd/network/30-br0.network"
     owner: root
@@ -79,7 +79,7 @@
   notify: "restart systemd-networkd"
 
 - name: Add first wired network interface to bridge
-  template:
+  ansible.builtin.template:
     src: bridge-bind.network.j2
     dest: "/etc/systemd/network/10-{{ item }}.network"
     owner: root
@@ -90,33 +90,33 @@
   notify: "restart systemd-networkd"
 
 - name: Set DNS in systemd-resolved config
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/systemd/resolved.conf
     regexp: "^#?DNS="
     line: "DNS={{ dns | join(' ') }}"
   notify: "restart systemd-resolved"
 
 - name: Set fallback DNS in systemd-resolved config
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/systemd/resolved.conf
     regexp: "FallbackDNS="
     line: "FallbackDNS={{ dns_fallback | join(' ') }}"
   notify: "restart systemd-resolved"
 
 - name: Disable Multicast DNS in systemd-resolved config
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/systemd/resolved.conf
     regexp: "MulticastDNS="
     line: "MulticastDNS=no"
   notify: "restart systemd-resolved"
 
 - name: Check whether systemd DNS stub is already symlinked
-  stat:
+  ansible.builtin.stat:
     path: "/run/systemd/resolve/stub-resolv.conf"
   register: stub
 
 - name: Enable systemd DNS stub
-  file:
+  ansible.builtin.file:
     src: /run/systemd/resolve/stub-resolv.conf
     dest: /etc/resolv.conf
     state: link
@@ -124,7 +124,7 @@
   when: stub.stat.exists and not stub.stat.islnk
 
 - name: Install systemd-timesyncd config
-  template:
+  ansible.builtin.template:
     src: timesyncd.conf.j2
     dest: /etc/systemd/timesyncd.conf
     owner: root

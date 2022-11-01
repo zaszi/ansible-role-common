@@ -1,6 +1,6 @@
 ---
 - name: Install pacman config
-  template:
+  ansible.builtin.template:
     src: pacman.conf.j2
     dest: /etc/pacman.conf
     owner: root
@@ -8,7 +8,7 @@
     mode: 0644
 
 - name: Install reflector unit file
-  copy:
+  ansible.builtin.copy:
     src: reflector.service
     dest: /etc/systemd/system/reflector.service
     owner: root
@@ -17,7 +17,7 @@
   when: arch == "auto"
 
 - name: Install reflector timer file
-  copy:
+  ansible.builtin.copy:
     src: reflector.timer
     dest: /etc/systemd/system/reflector.timer
     owner: root
@@ -26,13 +26,13 @@
   when: arch == "auto"
 
 - name: Create aurmake user
-  user:
+  ansible.builtin.user:
     name: aurmake
     state: present
     create_home: true
 
 - name: Ensure aurmake user can use passwordless pacman
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "/etc/sudoers.d/aurmake"
     line: "aurmake ALL=(ALL) NOPASSWD: /usr/bin/pacman"
     state: present

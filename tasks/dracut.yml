@@ -1,18 +1,18 @@
 ---
 - name: Install dracut
-  pacman:
+  community.general.pacman:
     name: dracut
     state: present
   when: dracut|bool
 
 - name: Remove mkinitcpio
-  pacman:
+  community.general.pacman:
     name: mkinitcpio
     state: absent
   when: dracut|bool
 
 - name: Ensure /etc/pacman.d/hooks exists
-  file:
+  ansible.builtin.file:
     path: "/etc/pacman.d/hooks"
     owner: root
     group: root
@@ -21,7 +21,7 @@
   when: dracut|bool
 
 - name: Install dracut configuration file
-  copy:
+  ansible.builtin.copy:
     src: dracut.conf
     dest: /etc/dracut.conf.d/10-dracut.conf
     owner: root
@@ -30,7 +30,7 @@
   when: dracut|bool
 
 - name: Install dracut install script
-  copy:
+  ansible.builtin.copy:
     src: dracut-install.sh
     dest: /usr/local/sbin/dracut-install.sh
     owner: root
@@ -39,7 +39,7 @@
   when: dracut|bool
 
 - name: Install dracut remove script
-  copy:
+  ansible.builtin.copy:
     src: dracut-remove.sh
     dest: /usr/local/sbin/dracut-remove.sh
     owner: root
@@ -48,7 +48,7 @@
   when: dracut|bool
 
 - name: Install dracut pacman install hook
-  copy:
+  ansible.builtin.copy:
     src: dracut-install.hook
     dest: /etc/pacman.d/hooks/90-dracut-install.hook
     owner: root
@@ -57,7 +57,7 @@
   when: dracut|bool
 
 - name: Install dracut pacman remove hook
-  copy:
+  ansible.builtin.copy:
     src: dracut-remove.hook
     dest: /etc/pacman.d/hooks/90-dracut-remove.hook
     owner: root

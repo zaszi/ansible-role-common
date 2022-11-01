@@ -1,6 +1,6 @@
 ---
 - name: Set XDG directory defaults
-  copy:
+  ansible.builtin.copy:
     src: user-dirs.defaults
     dest: /etc/xdg/user-dirs.defaults
     owner: root
@@ -9,14 +9,14 @@
   when: xdg|bool
 
 - name: Add groups
-  group:
+  ansible.builtin.group:
     name: "{{ item }}"
     system: true
     state: present
   with_items: "{{ groups }}"
 
 - name: Enable passwordless sudo group
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "/etc/sudoers.d/{{ item }}"
     state: present
     create: true
@@ -26,7 +26,7 @@
   loop: "{{ sudoers }}"
 
 - name: Add specified user(s)
-  user:
+  ansible.builtin.user:
     name: "{{ item.name }}"
     password: "{{ lookup('passwordstore', item.pass) |\
       password_hash('sha512', ansible_hostname) }}"
@@ -36,7 +36,7 @@
   loop: "{{ users }}"
 
 - name: Set authorized keys for user(s)
-  authorized_key:
+  ansible.posix.authorized_key:
     user: "{{ item.name }}"
     key: "{{ item.pubkey }}"
     exclusive: true

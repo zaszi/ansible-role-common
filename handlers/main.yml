@@ -1,42 +1,42 @@
 ---
 - name: Restart systemd-network
-  service:
+  ansible.builtin.service:
     name: systemd-networkd
     state: restarted
   listen: "restart systemd-networkd"
 
 - name: Restart systemd-resolved
-  service:
+  ansible.builtin.service:
     name: systemd-resolved
     state: restarted
   listen: "restart systemd-resolved"
 
 - name: Restart systemd-timesyncd
-  service:
+  ansible.builtin.service:
     name: systemd-timesyncd
     state: restarted
   listen: "restart systemd-timesyncd"
 
 - name: Restart systemd-journald
-  service:
+  ansible.builtin.service:
     name: systemd-journald
     state: restarted
   listen: "restart systemd-journald"
 
 - name: Restart iptables
-  service:
+  ansible.builtin.service:
     name: iptables
     state: restarted
   listen: "restart iptables"
 
 - name: Restart ip6tables
-  service:
+  ansible.builtin.service:
     name: ip6tables
     state: restarted
   listen: "restart ip6tables"
 
 - name: Restart sshd
-  service:
+  ansible.builtin.service:
     name: sshd
     state: restarted
   listen: "restart sshd"
