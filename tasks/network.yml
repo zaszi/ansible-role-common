@@ -22,6 +22,23 @@
   when: wireless|bool and item.startswith('wl')
   notify: "restart systemd-networkd"
 
+- name: Ensure override directory for systemd-networkd-wait-online exists
+  ansible.builtin.file:
+    path: /etc/systemd/system/systemd-networkd-wait-online.service.d/
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+  when: wired|bool
+
+- name: Install systemd-networkd-wait-online service override file
+  ansible.builtin.files:
+    src: networkd-wait-override.conf
+    dest: /etc/systemd/system/systemd-networkd-wait-online.service.d/override.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: wireless|bool
 - name: Ensure systemd override directory for iwd exists
   ansible.builtin.file:
     path: /etc/systemd/system/iwd.service.d/
