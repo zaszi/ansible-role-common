@@ -25,6 +25,14 @@
     mode: 0644
   when: arch == "auto"
 
+- name: Enable reflector timer
+  ansible.builtin.systemd:
+    name: reflector.timer
+    enabled: true
+    state: started
+    daemon_reload: true
+
+
 - name: Create aurmake user
   ansible.builtin.user:
     name: aurmake

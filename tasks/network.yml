@@ -66,6 +66,11 @@
     state: directory
   when: wireless|bool
 
+- name: Install iwd
+  community.general.pacman:
+    name: iwd
+    state: present
+
 - name: Install iwd config
   ansible.builtin.template:
     src: iwd.conf.j2
@@ -73,6 +78,14 @@
     owner: root
     group: root
     mode: 0644
+  when: wireless|bool
+
+- name: Enable iwd service
+  ansible.builtin.systemd:
+    name: iwd.service
+    enabled: true
+    state: started
+    daemon_reload: true
   when: wireless|bool
 
 - name: Set up network bridge device
@@ -105,6 +118,13 @@
   when: bridge|bool
   loop: "{{ bridge_interfaces }}"
   notify: "restart systemd-networkd"
+
+- name: Enable systemd-networkd service
+  ansible.builtin.systemd:
+    name: systemd-networkd.service
+    enabled: true
+    state: started
+    daemon_reload: true
 
 - name: Set DNS in systemd-resolved config
   ansible.builtin.lineinfile:
@@ -140,6 +160,13 @@
     force: true
   when: stub.stat.exists and not stub.stat.islnk
 
+- name: Enable systemd-resolved service
+  ansible.builtin.systemd:
+    name: systemd-resolved.service
+    enabled: true
+    state: started
+    daemon_reload: true
+
 - name: Install systemd-timesyncd config
   ansible.builtin.template:
     src: timesyncd.conf.j2
@@ -148,3 +175,10 @@
     group: root
     mode: 0644
   notify: "restart systemd-timesyncd"
+
+- name: Enable systemd-timesyncd service
+  ansible.builtin.systemd:
+    name: systemd-resolved.service
+    enabled: true
+    state: started
+    daemon_reload: true

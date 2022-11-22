@@ -17,6 +17,20 @@
     mode: 0644
   notify: "restart ip6tables"
 
+- name: Enable iptables service
+  ansible.builtin.systemd:
+    name: iptables.service
+    enabled: true
+    state: started
+    daemon_reload: true
+
+- name: Enable ip6tables service
+  ansible.builtin.systemd:
+    name: ip6tables.service
+    enabled: true
+    state: started
+    daemon_reload: true
+
 - name: Remove small Diffie-Hellman moduli
   ansible.builtin.shell: |
     awk '$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.safe
@@ -34,3 +48,10 @@
     mode: 0644
     validate: "sshd -T -f %s"
   notify: "restart sshd"
+
+- name: Enable sshd service
+  ansible.builtin.systemd:
+    name: sshd.service
+    enabled: true
+    state: started
+    daemon_reload: true
