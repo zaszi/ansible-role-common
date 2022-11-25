@@ -31,7 +31,7 @@
     enabled: true
     state: started
     daemon_reload: true
-
+  when: arch == "auto"
 
 - name: Create aurmake user
   ansible.builtin.user:
