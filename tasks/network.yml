@@ -32,13 +32,13 @@
   when: wired|bool
 
 - name: Install systemd-networkd-wait-online service override file
-  ansible.builtin.files:
+  ansible.builtin.copy:
     src: networkd-wait-override.conf
     dest: /etc/systemd/system/systemd-networkd-wait-online.service.d/override.conf
     owner: root
     group: root
     mode: 0644
-  when: wireless|bool
+  when: wired|bool
 
 - name: Ensure systemd override directory for iwd exists
   ansible.builtin.file:
