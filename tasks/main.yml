@@ -1,6 +1,6 @@
 ---
 - name: Set the system time zone
-  community.general.system.timezone:
+  community.general.timezone:
     name: "{{ timezone }}"
 
 - name: Set the hostname
