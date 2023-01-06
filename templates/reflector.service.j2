@@ -1,0 +1,11 @@
+[Unit]
+Description=Pacman mirrorlist update
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c "/usr/bin/reflector --country {{ mirrors|join(",") }} --number 5 --protocol https --sort country --save /etc/pacman.d/mirrorlist; rm --force /etc/pacman.d/mirrorlist.pacnew; pkgfile --update"
+
+[Install]
+RequiredBy=multi-user.target

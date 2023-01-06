@@ -21,6 +21,7 @@ Requires the `ansible-aur` module for installing AUR packages on hosts. See the 
 | ----------------- | -------------------------------- | ------------------------------------------------------------------------------------------- |
 | timezone          | **UTC**, …                       | The system timezone, list all possible values with the command `timedatectl list-timezones` |
 | dracut            | true, **false**                  | Whether to utilize `dracut` instead of the default `mkinitcpio`                             |
+| mirrors           | **[United States]**, …           | A list of countries from which mirrors should be selected.                                  |
 | arch              | **auto**, armv6h, armv7h, armv8h | Machine architecture, defaults to `auto` for x86_64, but must be changed for ARM machines   |
 | packages          | **[]**, …                        | List of packages to install                                                                 |
 | packages_aur      | **[]**, …                        | List of AUR packages to install                                                             |

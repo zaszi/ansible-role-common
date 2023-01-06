@@ -3,6 +3,8 @@
 
 timezone: UTC
 dracut: false
+mirrors:
+  - United States
 
 ### COMMON - PACKAGES ###
 
