@@ -71,6 +71,7 @@
   community.general.pacman:
     name: iwd
     state: present
+  when: wireless|bool
 
 - name: Install iwd config
   ansible.builtin.template:
