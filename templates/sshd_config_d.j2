@@ -1,0 +1,25 @@
+# Custom override options for sshd_config.
+
+# Use only ed25519 host key.
+HostKey /etc/ssh/ssh_host_ed25519_key
+
+# No logging in as root.
+PermitRootLogin no
+
+# Maximum 3 attempts to log in.
+MaxAuthTries 3
+
+# Only check .ssh/authorized_keys.
+AuthorizedKeysFile .ssh/authorized_keys
+
+# Disable tunneled clear text passwords.
+PasswordAuthentication no
+
+# Only users in the network group may connect.
+AllowGroups network
+
+# Restrict key exchange, cipher, MAC and host key algorithms, as indicated by ssh-audit.
+KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
+MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,umac-128-etm@openssh.com
+HostKeyAlgorithms ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521-cert-v01@openssh.com,ssh-ed25519-cert-v01@openssh.com,rsa-sha2-512-cert-v01@openssh.com,rsa-sha2-256-cert-v01@openssh.com,ssh-rsa-cert-v01@openssh.com,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-ed25519,rsa-sha2-512,rsa-sha2-256,sk-ssh-ed25519@openssh.com
