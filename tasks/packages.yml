@@ -5,7 +5,7 @@
     dest: /etc/pacman.conf
     owner: root
     group: root
-    mode: 0644
+    mode: '644'
 
 - name: Install reflector unit file
   ansible.builtin.template:
@@ -13,7 +13,7 @@
     dest: /etc/systemd/system/reflector.service
     owner: root
     group: root
-    mode: 0644
+    mode: '644'
   when: arch == "auto"
 
 - name: Install reflector timer file
@@ -22,7 +22,7 @@
     dest: /etc/systemd/system/reflector.timer
     owner: root
     group: root
-    mode: 0644
+    mode: '644'
   when: arch == "auto"
 
 - name: Enable reflector timer
@@ -46,7 +46,7 @@
     state: present
     owner: root
     group: root
-    mode: 0440
+    mode: '440'
     create: true
     validate: "visudo -cf %s"
 

@@ -16,7 +16,7 @@
     path: "/etc/pacman.d/hooks"
     owner: root
     group: root
-    mode: 0755
+    mode: '755'
     state: directory
   when: dracut|bool
 
@@ -26,7 +26,7 @@
     dest: /etc/dracut.conf.d/10-dracut.conf
     owner: root
     group: root
-    mode: 0644
+    mode: '644'
   when: dracut|bool
 
 - name: Install dracut install script
@@ -35,7 +35,7 @@
     dest: /usr/local/sbin/dracut-install.sh
     owner: root
     group: root
-    mode: 0700
+    mode: '700'
   when: dracut|bool
 
 - name: Install dracut remove script
@@ -44,7 +44,7 @@
     dest: /usr/local/sbin/dracut-remove.sh
     owner: root
     group: root
-    mode: 0700
+    mode: '700'
   when: dracut|bool
 
 - name: Install dracut pacman install hook
@@ -53,7 +53,7 @@
     dest: /etc/pacman.d/hooks/90-dracut-install.hook
     owner: root
     group: root
-    mode: 0644
+    mode: '644'
   when: dracut|bool
 
 - name: Install dracut pacman remove hook
@@ -62,5 +62,5 @@
     dest: /etc/pacman.d/hooks/90-dracut-remove.hook
     owner: root
     group: root
-    mode: 0644
+    mode: '644'
   when: dracut|bool

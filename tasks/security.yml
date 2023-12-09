@@ -5,7 +5,7 @@
     dest: /etc/iptables/iptables.rules
     owner: root
     group: root
-    mode: 0644
+    mode: '644'
   notify: "restart iptables"
 
 - name: Main | Install IPv6 iptables configuration
@@ -14,7 +14,7 @@
     dest: /etc/iptables/ip6tables.rules
     owner: root
     group: root
-    mode: 0644
+    mode: '644'
   notify: "restart ip6tables"
 
 - name: Enable iptables service
@@ -45,7 +45,7 @@
     dest: /etc/ssh/sshd_config.d/10-custom.conf
     owner: root
     group: root
-    mode: 0644
+    mode: '644'
     validate: "sshd -T -f %s"
   notify: "restart sshd"
 

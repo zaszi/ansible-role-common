@@ -5,7 +5,7 @@
     dest: "/etc/systemd/network/10-{{ item }}.network"
     owner: root
     group: root
-    mode: 0644
+    mode: '644'
   loop: "{{ ansible_interfaces }}"
   when: wired|bool and (item.startswith('en') or
     item.startswith('eth')) and item not in bridge_interfaces
@@ -17,7 +17,7 @@
     dest: "/etc/systemd/network/20-{{ item }}.network"
     owner: root
     group: root
-    mode: 0644
+    mode: '644'
   loop: "{{ ansible_interfaces }}"
   when: wireless|bool and item.startswith('wl')
   notify: "restart systemd-networkd"
@@ -27,7 +27,7 @@
     path: /etc/systemd/system/systemd-networkd-wait-online.service.d/
     owner: root
     group: root
-    mode: 0755
+    mode: '755'
     state: directory
   when: wired|bool
 
@@ -37,7 +37,7 @@
     dest: /etc/systemd/system/systemd-networkd-wait-online.service.d/override.conf
     owner: root
     group: root
-    mode: 0644
+    mode: '644'
   when: wired|bool
 
 - name: Ensure systemd override directory for iwd exists
@@ -45,7 +45,7 @@
     path: /etc/systemd/system/iwd.service.d/
     owner: root
     group: root
-    mode: 0755
+    mode: '755'
     state: directory
   when: wireless|bool
 
@@ -55,7 +55,7 @@
     dest: /etc/systemd/system/iwd.service.d/override.conf
     owner: root
     group: root
-    mode: 0644
+    mode: '644'
   when: wireless|bool
 
 - name: Ensure /etc/iwd directory exists
@@ -63,7 +63,7 @@
     path: /etc/iwd
     owner: root
     group: root
-    mode: 0755
+    mode: '755'
     state: directory
   when: wireless|bool
 
@@ -79,7 +79,7 @@
     dest: /etc/iwd/main.conf
     owner: root
     group: root
-    mode: 0644
+    mode: '644'
   when: wireless|bool
 
 - name: Enable iwd service
@@ -96,7 +96,7 @@
     dest: "/etc/systemd/network/30-br0.netdev"
     owner: root
     group: root
-    mode: 0644
+    mode: '644'
   when: bridge|bool
   notify: "restart systemd-networkd"
 
@@ -106,7 +106,7 @@
     dest: "/etc/systemd/network/30-br0.network"
     owner: root
     group: root
-    mode: 0644
+    mode: '644'
   when: bridge|bool
   notify: "restart systemd-networkd"
 
@@ -116,7 +116,7 @@
     dest: "/etc/systemd/network/10-{{ item }}.network"
     owner: root
     group: root
-    mode: 0644
+    mode: '644'
   when: bridge|bool
   loop: "{{ bridge_interfaces }}"
   notify: "restart systemd-networkd"
@@ -175,7 +175,7 @@
     dest: /etc/systemd/timesyncd.conf
     owner: root
     group: root
-    mode: 0644
+    mode: '644'
   notify: "restart systemd-timesyncd"
 
 - name: Enable systemd-timesyncd service
