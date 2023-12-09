@@ -169,13 +169,18 @@
     state: started
     daemon_reload: true
 
-- name: Install systemd-timesyncd config
-  ansible.builtin.template:
-    src: timesyncd.conf.j2
-    dest: /etc/systemd/timesyncd.conf
-    owner: root
-    group: root
-    mode: '644'
+- name: Set NTP in systemd-timesyncd config
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/timesyncd.conf
+    regexp: "^#?NTP="
+    line: "NTP={{ ntp | join(' ') }}"
+  notify: "restart systemd-timesyncd"
+
+- name: Set fallback NTP in systemd-timesyncd config
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/timesyncd.conf
+    regexp: "FallbackNTP="
+    line: "FallbackNTP={{ ntp_fallback | join(' ') }}"
   notify: "restart systemd-timesyncd"
 
 - name: Enable systemd-timesyncd service
