@@ -28,12 +28,6 @@
   when: arch != "auto"
   notify: "restart systemd-journald"
 
-- name: Remove old persistent journald logs
-  ansible.builtin.file:
-    path: /var/log/journal
-    state: absent
-  when: arch != "auto"
-
 - name: Add dracut configuration
   ansible.builtin.include_tasks: dracut.yml
 
