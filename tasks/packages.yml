@@ -7,19 +7,19 @@
     group: root
     mode: '644'
 
-- name: Install reflector unit file
-  ansible.builtin.template:
-    src: reflector.service.j2
-    dest: /etc/systemd/system/reflector.service
+- name: Ensure /etc/xdg/reflector directory exists
+  ansible.builtin.file:
+    path: /etc/xdg/reflector
     owner: root
     group: root
-    mode: '644'
+    mode: '755'
+    state: directory
   when: arch == "auto"
 
-- name: Install reflector timer file
-  ansible.builtin.copy:
-    src: reflector.timer
-    dest: /etc/systemd/system/reflector.timer
+- name: Install reflector config
+  ansible.builtin.template:
+    src: reflector.conf.j2
+    dest: /etc/xdg/reflector/reflector.conf
     owner: root
     group: root
     mode: '644'
