@@ -2,25 +2,25 @@
 - name: Set up wired network configuration
   ansible.builtin.template:
     src: wired.network.j2
-    dest: "/etc/systemd/network/10-{{ item }}.network"
+    dest: '/etc/systemd/network/10-{{ item }}.network'
     owner: root
     group: root
     mode: '644'
-  loop: "{{ ansible_interfaces }}"
+  loop: '{{ ansible_interfaces }}'
   when: wired|bool and (item.startswith('en') or
     item.startswith('eth')) and item not in bridge_interfaces
-  notify: "restart systemd-networkd"
+  notify: 'restart systemd-networkd'
 
 - name: Set up wireless network configuration
   ansible.builtin.template:
     src: wireless.network.j2
-    dest: "/etc/systemd/network/20-{{ item }}.network"
+    dest: '/etc/systemd/network/20-{{ item }}.network'
     owner: root
     group: root
     mode: '644'
-  loop: "{{ ansible_interfaces }}"
+  loop: '{{ ansible_interfaces }}'
   when: wireless|bool and item.startswith('wl')
-  notify: "restart systemd-networkd"
+  notify: 'restart systemd-networkd'
 
 - name: Ensure override directory for systemd-networkd-wait-online exists
   ansible.builtin.file:
@@ -93,33 +93,33 @@
 - name: Set up network bridge device
   ansible.builtin.copy:
     src: bridge.netdev
-    dest: "/etc/systemd/network/30-br0.netdev"
+    dest: '/etc/systemd/network/30-br0.netdev'
     owner: root
     group: root
     mode: '644'
   when: bridge|bool
-  notify: "restart systemd-networkd"
+  notify: 'restart systemd-networkd'
 
 - name: Set up bridge network configuration
   ansible.builtin.copy:
     src: bridge.network
-    dest: "/etc/systemd/network/30-br0.network"
+    dest: '/etc/systemd/network/30-br0.network'
     owner: root
     group: root
     mode: '644'
   when: bridge|bool
-  notify: "restart systemd-networkd"
+  notify: 'restart systemd-networkd'
 
 - name: Add first wired network interface to bridge
   ansible.builtin.template:
     src: bridge-bind.network.j2
-    dest: "/etc/systemd/network/10-{{ item }}.network"
+    dest: '/etc/systemd/network/10-{{ item }}.network'
     owner: root
     group: root
     mode: '644'
   when: bridge|bool
-  loop: "{{ bridge_interfaces }}"
-  notify: "restart systemd-networkd"
+  loop: '{{ bridge_interfaces }}'
+  notify: 'restart systemd-networkd'
 
 - name: Enable systemd-networkd service
   ansible.builtin.systemd:
@@ -131,27 +131,27 @@
 - name: Set DNS in systemd-resolved config
   ansible.builtin.lineinfile:
     path: /etc/systemd/resolved.conf
-    regexp: "^#?DNS="
+    regexp: '^#?DNS='
     line: "DNS={{ dns | join(' ') }}"
-  notify: "restart systemd-resolved"
+  notify: 'restart systemd-resolved'
 
 - name: Set fallback DNS in systemd-resolved config
   ansible.builtin.lineinfile:
     path: /etc/systemd/resolved.conf
-    regexp: "FallbackDNS="
+    regexp: 'FallbackDNS='
     line: "FallbackDNS={{ dns_fallback | join(' ') }}"
-  notify: "restart systemd-resolved"
+  notify: 'restart systemd-resolved'
 
 - name: Disable Multicast DNS in systemd-resolved config
   ansible.builtin.lineinfile:
     path: /etc/systemd/resolved.conf
-    regexp: "MulticastDNS="
-    line: "MulticastDNS=no"
-  notify: "restart systemd-resolved"
+    regexp: 'MulticastDNS='
+    line: 'MulticastDNS=no'
+  notify: 'restart systemd-resolved'
 
 - name: Check whether systemd DNS stub is already symlinked
   ansible.builtin.stat:
-    path: "/run/systemd/resolve/stub-resolv.conf"
+    path: '/run/systemd/resolve/stub-resolv.conf'
   register: stub
 
 - name: Enable systemd DNS stub
@@ -172,16 +172,16 @@
 - name: Set NTP in systemd-timesyncd config
   ansible.builtin.lineinfile:
     path: /etc/systemd/timesyncd.conf
-    regexp: "^#?NTP="
+    regexp: '^#?NTP='
     line: "NTP={{ ntp | join(' ') }}"
-  notify: "restart systemd-timesyncd"
+  notify: 'restart systemd-timesyncd'
 
 - name: Set fallback NTP in systemd-timesyncd config
   ansible.builtin.lineinfile:
     path: /etc/systemd/timesyncd.conf
-    regexp: "FallbackNTP="
+    regexp: 'FallbackNTP='
     line: "FallbackNTP={{ ntp_fallback | join(' ') }}"
-  notify: "restart systemd-timesyncd"
+  notify: 'restart systemd-timesyncd'
 
 - name: Enable systemd-timesyncd service
   ansible.builtin.systemd:

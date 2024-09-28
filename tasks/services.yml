@@ -5,7 +5,7 @@
 
 - name: Enable services
   ansible.builtin.service:
-    name: "{{ item }}"
+    name: '{{ item }}'
     enabled: true
     state: started
-  loop: "{{ services }}"
+  loop: '{{ services }}'

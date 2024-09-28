@@ -6,7 +6,7 @@
     owner: root
     group: root
     mode: '644'
-  notify: "restart iptables"
+  notify: 'restart iptables'
 
 - name: Main | Install IPv6 iptables configuration
   ansible.builtin.template:
@@ -15,7 +15,7 @@
     owner: root
     group: root
     mode: '644'
-  notify: "restart ip6tables"
+  notify: 'restart ip6tables'
 
 - name: Enable iptables service
   ansible.builtin.systemd:
@@ -37,7 +37,7 @@
     cp /etc/ssh/moduli.safe /etc/ssh/moduli
   args:
     creates: /etc/ssh/moduli.safe
-  notify: "restart sshd"
+  notify: 'restart sshd'
 
 - name: Install sshd configuration override
   ansible.builtin.template:
@@ -46,8 +46,8 @@
     owner: root
     group: root
     mode: '644'
-    validate: "sshd -T -f %s"
-  notify: "restart sshd"
+    validate: 'sshd -T -f %s'
+  notify: 'restart sshd'
 
 - name: Enable sshd service
   ansible.builtin.systemd:

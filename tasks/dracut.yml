@@ -13,7 +13,7 @@
 
 - name: Ensure /etc/pacman.d/hooks exists
   ansible.builtin.file:
-    path: "/etc/pacman.d/hooks"
+    path: '/etc/pacman.d/hooks'
     owner: root
     group: root
     mode: '755'

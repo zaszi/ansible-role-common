@@ -41,26 +41,26 @@
 
 - name: Ensure aurmake user can use passwordless pacman
   ansible.builtin.lineinfile:
-    dest: "/etc/sudoers.d/aurmake"
-    line: "aurmake ALL=(ALL) NOPASSWD: /usr/bin/pacman"
+    dest: '/etc/sudoers.d/aurmake'
+    line: 'aurmake ALL=(ALL) NOPASSWD: /usr/bin/pacman'
     state: present
     owner: root
     group: root
     mode: '440'
     create: true
-    validate: "visudo -cf %s"
+    validate: 'visudo -cf %s'
 
 - name: Install packages
   community.general.pacman:
-    name: "{{ packages }}"
+    name: '{{ packages }}'
     update_cache: true
     state: present
-  when: "packages | length > 0"
+  when: 'packages | length > 0'
 
 - name: Install AUR packages
   become: true
   become_user: aurmake
   aur:
-    name: "{{ item }}"
-  loop: "{{ packages_aur }}"
-  when: "packages_aur | length > 0"
+    name: '{{ item }}'
+  loop: '{{ packages_aur }}'
+  when: 'packages_aur | length > 0'

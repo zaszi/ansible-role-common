@@ -10,36 +10,36 @@
 
 - name: Add user groups
   ansible.builtin.group:
-    name: "{{ item }}"
+    name: '{{ item }}'
     system: true
     state: present
-  with_items: "{{ user_groups }}"
+  with_items: '{{ user_groups }}'
 
 - name: Enable passwordless sudo group
   ansible.builtin.lineinfile:
-    dest: "/etc/sudoers.d/{{ item }}"
+    dest: '/etc/sudoers.d/{{ item }}'
     state: present
     create: true
     mode: '440'
-    line: "%{{ item }} ALL=(ALL) NOPASSWD: ALL"
-    validate: "visudo -cf %s"
-  loop: "{{ sudoers }}"
+    line: '%{{ item }} ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+  loop: '{{ sudoers }}'
 
 - name: Add specified user(s)
   ansible.builtin.user:
-    name: "{{ item.name }}"
+    name: '{{ item.name }}'
     password: "{{ lookup('passwordstore', item.pass) |\
       password_hash('sha512', ansible_hostname) }}"
     shell: "{{ item.shell | default('/bin/bash') }}"
     groups: "{{ item.groups | join(',') if item.groups is defined else '' }}"
     state: present
-  loop: "{{ users }}"
+  loop: '{{ users }}'
 
 - name: Set authorized keys for user(s)
   ansible.posix.authorized_key:
-    user: "{{ item.name }}"
-    key: "{{ item.pubkey }}"
+    user: '{{ item.name }}'
+    key: '{{ item.pubkey }}'
     exclusive: true
     state: present
   when: item.pubkey|bool
-  loop: "{{ users }}"
+  loop: '{{ users }}'
