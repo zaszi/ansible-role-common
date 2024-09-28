@@ -30,8 +30,9 @@ Requires the `ansible-aur` module for installing AUR packages on hosts. See the 
 | sudoers           | **[]**, …                        | List of groups that will receive passwordless sudo access                                   |
 | sshusers          | **[]**, …                        | List of groups that will receive SSH access                                                 |
 | users             | **[]**, …                        | List of users to add, see below this table for the expected format                          |
-| wired             | **true**, false                  | Whether to set up a wired network configuration                                             |
-| wireless          | true, **false**                  | Whether to set up a wireless network configuration                                          |
+| ethernet          | **true**, false                  | Whether to set up an ethernet network configuration                                         |
+| wlan              | true, **false**                  | Whether to set up a wireless network configuration                                          |
+| wwan              | true, **false**                  | Whether to set up a WAN network configuration                                               |
 | bridge            | true, **false**                  | Whether to set up a network bridge interface                                                |
 | bridge_interfaces | **[]**, …                        | Which network interfaces to bridge (requires above option to be true)                       |
 | firewall_tcp      | **[]**, …                        | List of TCP ports to allow in the firewall                                                  |

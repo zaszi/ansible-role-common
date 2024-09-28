@@ -1,62 +1,37 @@
 ---
-- name: Set up wired network configuration
+- name: Set up ethernet network configuration
   ansible.builtin.template:
-    src: wired.network.j2
+    src: ethernet.network.j2
     dest: '/etc/systemd/network/10-{{ item }}.network'
     owner: root
     group: root
     mode: '644'
   loop: '{{ ansible_interfaces }}'
-  when: wired|bool and (item.startswith('en') or
+  when: ethernet|bool and (item.startswith('en') or
     item.startswith('eth')) and item not in bridge_interfaces
   notify: 'restart systemd-networkd'
 
-- name: Set up wireless network configuration
+- name: Set up wlan network configuration
   ansible.builtin.template:
-    src: wireless.network.j2
+    src: wlan.network.j2
     dest: '/etc/systemd/network/20-{{ item }}.network'
     owner: root
     group: root
     mode: '644'
   loop: '{{ ansible_interfaces }}'
-  when: wireless|bool and item.startswith('wl')
+  when: wlan|bool and item.startswith('wl')
   notify: 'restart systemd-networkd'
 
-- name: Ensure override directory for systemd-networkd-wait-online exists
-  ansible.builtin.file:
-    path: /etc/systemd/system/systemd-networkd-wait-online.service.d/
-    owner: root
-    group: root
-    mode: '755'
-    state: directory
-  when: wired|bool
-
-- name: Install systemd-networkd-wait-online service override file
-  ansible.builtin.copy:
-    src: networkd-wait-override.conf
-    dest: /etc/systemd/system/systemd-networkd-wait-online.service.d/override.conf
-    owner: root
-    group: root
-    mode: '644'
-  when: wired|bool
-
-- name: Ensure systemd override directory for iwd exists
-  ansible.builtin.file:
-    path: /etc/systemd/system/iwd.service.d/
-    owner: root
-    group: root
-    mode: '755'
-    state: directory
-  when: wireless|bool
-
-- name: Install iwd service override file
+- name: Set up wwan network configuration
   ansible.builtin.template:
-    src: iwd_override.conf.j2
-    dest: /etc/systemd/system/iwd.service.d/override.conf
+    src: wwan.network.j2
+    dest: '/etc/systemd/network/30-{{ item }}.network'
     owner: root
     group: root
     mode: '644'
-  when: wireless|bool
+  loop: '{{ ansible_interfaces }}'
+  when: wwan|bool and item.startswith('ww')
+  notify: 'restart systemd-networkd'
 
 - name: Ensure /etc/iwd directory exists
   ansible.builtin.file:
@@ -65,13 +40,13 @@
     group: root
     mode: '755'
     state: directory
-  when: wireless|bool
+  when: wlan|bool
 
 - name: Install iwd
   community.general.pacman:
     name: iwd
     state: present
-  when: wireless|bool
+  when: wlan|bool
 
 - name: Install iwd config
   ansible.builtin.template:
@@ -80,7 +55,7 @@
     owner: root
     group: root
     mode: '644'
-  when: wireless|bool
+  when: wlan|bool
 
 - name: Enable iwd service
   ansible.builtin.systemd:
@@ -88,12 +63,12 @@
     enabled: true
     state: started
     daemon_reload: true
-  when: wireless|bool
+  when: wlan|bool
 
 - name: Set up network bridge device
   ansible.builtin.copy:
     src: bridge.netdev
-    dest: '/etc/systemd/network/30-br0.netdev'
+    dest: '/etc/systemd/network/40-br0.netdev'
     owner: root
     group: root
     mode: '644'
@@ -103,14 +78,14 @@
 - name: Set up bridge network configuration
   ansible.builtin.copy:
     src: bridge.network
-    dest: '/etc/systemd/network/30-br0.network'
+    dest: '/etc/systemd/network/40-br0.network'
     owner: root
     group: root
     mode: '644'
   when: bridge|bool
   notify: 'restart systemd-networkd'
 
-- name: Add first wired network interface to bridge
+- name: Add first ethernet network interface to bridge
   ansible.builtin.template:
     src: bridge-bind.network.j2
     dest: '/etc/systemd/network/10-{{ item }}.network'
