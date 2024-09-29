@@ -1,11 +1,28 @@
 ---
-- name: Install pacman config
-  ansible.builtin.template:
-    src: pacman.conf.j2
+- name: Pacman config - Enable multilib
+  ansible.builtin.replace:
     dest: /etc/pacman.conf
-    owner: root
-    group: root
-    mode: '644'
+    regexp: "#[multilib]\n#Include = /etc/pacman.d/mirrorlist"
+    replace: "#[multilib]\nInclude = /etc/pacman.d/mirrorlist"
+
+- name: Pacman config - Enable verbose package lists
+  ansible.builtin.lineinfile:
+    dest: /etc/pacman.conf
+    line: 'VerbosePkgLists'
+    regexp: '^#VerbosePkgLists$'
+
+- name: Pacman config - Enable color
+  ansible.builtin.lineinfile:
+    dest: /etc/pacman.conf
+    line: 'Color'
+    regexp: '^#Color$'
+
+- name: Pacman config - Enable candy
+  ansible.builtin.lineinfile:
+    dest: /etc/pacman.conf
+    line: 'ILoveCandy'
+    regexp: '^ILoveCandy$'
+    insertafter: '^#ParallelDownloads'
 
 - name: Ensure /etc/xdg/reflector directory exists
   ansible.builtin.file:
